@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>MedEase — Mobile Prototype</title>
+
+<!-- Google Fonts (friendly rounded) -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f6fbfb;
+    --card:#ffffff;
+    --muted:#6b7b86;
+    --accent:#7ec8b5;    /* mint */
+    --accent-2:#a7d8f5;  /* sky */
+    --accent-3:#d8b7ff;  /* lavender */
+    --danger:#ff6b6b;
+    --glass: rgba(255,255,255,0.8);
+    --radius:14px;
+    font-family: 'Nunito', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  html,body{height:100%; margin:0; background:var(--bg); color:#083241;}
+  *{box-sizing:border-box}
+  a{color:inherit; text-decoration:none}
+  button{font-family:inherit}
+
+  /* App Shell */
+  .app {
+    max-width:420px;
+    margin:18px auto;
+    background:linear-gradient(180deg,#ffffff 0%, #f7fbfd 100%);
+    border-radius:18px;
+    box-shadow: 0 12px 40px rgba(15,40,50,0.08);
+    overflow:hidden;
+    min-height:720px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Header */
+  header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px;
+    border-bottom:1px solid rgba(6,30,40,0.04);
+    background: linear-gradient(90deg, rgba(124,201,173,0.12), rgba(167,216,245,0.08));
+  }
+  .brand {
+    display:flex; gap:10px; align-items:center;
+  }
+  .logo {
+    width:46px; height:46px; border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex; align-items:center; justify-content:center;
+    color:#06323a; font-weight:800; font-size:18px;
+    box-shadow: 0 6px 18px rgba(126,200,181,0.18);
+  }
+  .brand h1{margin:0; font-size:16px}
+  .brand p{margin:0; font-size:11px; color:var(--muted)}
+
+  /* Main area (scrollable) */
+  main{
+    padding:14px;
+    flex:1;
+    overflow:auto;
+  }
+
+  /* Bottom navigation */
+  nav.bottom {
+    display:flex;
+    border-top:1px solid rgba(6,30,40,0.04);
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.95));
+  }
+  nav.bottom a{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; color:var(--muted);
+    font-size:12px;
+  }
+  nav.bottom a.active{ color: #083241; font-weight:700; background: linear-gradient(180deg, rgba(126,200,181,0.06), rgba(167,216,245,0.03)); }
+
+  /* Page cards / sections */
+  .card{
+    background:var(--card);
+    border-radius:12px;
+    padding:12px;
+    box-shadow: 0 6px 18px rgba(14,34,40,0.03);
+    margin-bottom:12px;
+    border: 1px solid rgba(6,30,40,0.03);
+  }
+  .section-title{ font-weight:700; font-size:14px; margin-bottom:6px; color:#05303a }
+  .muted{color:var(--muted); font-size:13px}
+
+  /* Buttons & inputs */
+  .btn {
+    display:inline-flex; gap:8px; align-items:center; justify-content:center;
+    padding:10px 12px; border-radius:12px; border:0; color:white; font-weight:700;
+    background:linear-gradient(90deg,var(--accent),var(--accent-3));
+  }
+  .btn.ghost{ background:transparent; color:var(--accent); border:1px solid rgba(6,30,40,0.06) }
+  .input, .select, textarea{ width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(6,30,40,0.04); background:transparent; font-size:14px; color: #052d33; }
+  textarea{ resize:none; }
+
+  /* Map placeholder */
+  .map-placeholder{
+    height:220px; border-radius:10px; overflow:hidden; position:relative;
+    background:linear-gradient(180deg,#dff6f3,#eaf8ff);
+    border:1px solid rgba(6,30,40,0.03);
+  }
+  .map-sim{
+    width:100%; height:100%;
+    position:absolute; left:0; top:0; display:flex; align-items:center; justify-content:center;
+    color: #0a2b2e; font-weight:700; font-size:14px;
+  }
+  .map-ambulance {
+    position:absolute; width:52px; height:52px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#ffd8b2,#ffd1e3); box-shadow: 0 8px 20px rgba(15,40,50,0.06);
+    transform:translate(-50%,-50%);
+  }
+  .map-pulse { width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow:0 0 20px rgba(126,200,181,0.35); }
+
+  /* Doctor list */
+  .doctor {
+    display:flex; gap:10px; align-items:center; padding:10px; border-radius:10px;
+    border:1px solid rgba(6,30,40,0.03); background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.9));
+  }
+  .doc-avatar{ width:52px; height:52px; border-radius:10px; background:linear-gradient(135deg,#fff,#eee); color:#072; display:flex; align-items:center; justify-content:center; font-weight:800 }
+
+  /* Remedies grid */
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px }
+  .rem { padding:10px; border-radius:10px; background:#fff; border:1px solid rgba(6,30,40,0.03); }
+
+  /* Symptom page */
+  .file-input { display:flex; gap:8px; align-items:center; }
+  .small { font-size:12px; color:var(--muted) }
+
+  /* Utilities */
+  .row { display:flex; gap:8px; }
+  .space { height:12px }
+  .center { text-align:center }
+  .badge { padding:6px 8px; border-radius:999px; font-weight:700; font-size:12px; color:#063; background:rgba(126,200,181,0.14); }
+
+  /* Responsive for very small phones */
+  @media (max-width:360px){
+    .grid{ grid-template-columns:1fr }
+    .map-placeholder{ height:200px }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- HEADER -->
+  <header>
+    <div class="brand" style="flex:1">
+      <div class="logo">ME</div>
+      <div>
+        <h1>MedEase</h1>
+        <p class="small">Smart Emergency & Natural Wellness</p>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center">
+      <button id="helpBtn" class="btn ghost" style="padding:8px 10px; font-size:13px">Help</button>
+    </div>
+  </header>
+
+  <!-- MAIN: client-side pages -->
+  <main id="main">
+
+    <!-- HOME PAGE -->
+    <section id="page-home" class="page" data-title="Home">
+      <div class="card">
+        <div class="section-title">Quick Actions</div>
+        <div class="row" style="margin-top:12px">
+          <div style="flex:1">
+            <button class="btn" id="quickAmb" style="width:100%">🚑 Book Ambulance</button>
+          </div>
+          <div style="width:12px"></div>
+          <div style="width:120px">
+            <button class="btn ghost" id="quickCheck" style="width:100%">🧠 Symptom Check</button>
+          </div>
+        </div>
+        <div class="space"></div>
+        <div class="muted">Emergency Tip: stay calm, apply basic first aid if trained, and provide clear location details to the dispatcher.</div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Nearby Availability</div>
+        <div class="muted small">Hospitals & ambulances available in demo mode</div>
+        <div class="space"></div>
+        <div id="homeHospitals"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Natural Remedies</div>
+        <div class="muted small">Herbal & home remedies for common daily issues</div>
+        <div class="space"></div>
+        <div class="grid" id="homeRemedies"></div>
+      </div>
+    </section>
+
+    <!-- AMBULANCE PAGE -->
+    <section id="page-ambulance" class="page" style="display:none" data-title="Ambulance">
+      <div class="card">
+        <div class="section-title">Book Ambulance</div>
+        <label class="small">Pickup location</label>
+        <input id="pickupInput" class="input" placeholder="Your current address or landmark" />
+        <div class="space"></div>
+        <label class="small">Ambulance type</label>
+        <select id="typeSelect" class="select">
+          <option value="BLS">Basic Life Support (BLS)</option>
+          <option value="ALS">Advanced Life Support (ALS)</option>
+        </select>
+        <div class="space"></div>
+        <label class="small">Urgency</label>
+        <select id="urgencySelect" class="select">
+          <option value="normal">Normal</option>
+          <option value="urgent">Urgent</option>
+          <option value="critical">Critical</option>
+        </select>
+        <div class="space"></div>
+        <button class="btn" id="bookNowBtn">Request Ambulance</button>
+        <div class="space"></div>
+        <div id="bookingInfo" class="muted small">No active booking</div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Live Tracking</div>
+        <div class="muted small">Simulated tracking for demo. Ambulance moves toward pickup.</div>
+        <div class="space"></div>
+        <div class="map-placeholder" id="mapArea">
+          <div class="map-sim" id="mapSim">Map simulation (demo)</div>
+        </div>
+        <div class="space"></div>
+        <div style="display:flex; gap:8px; align-items:center">
+          <div class="small">Speed</div>
+          <input id="simRange" type="range" min="0.4" max="2" step="0.1" value="1" style="flex:1"/>
+          <div class="small" id="etaText">ETA: --</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SYMPTOM PAGE -->
+    <section id="page-symptom" class="page" style="display:none" data-title="Symptom Detector">
+      <div class="card">
+        <div class="section-title">AI Symptom Detector</div>
+        <div class="muted small">Upload a clear photo (wound, rash) and answer a few quick questions.</div>
+        <div class="space"></div>
+        <div class="file-input">
+          <input id="photoFile" type="file" accept="image/*" />
+        </div>
+        <div class="space"></div>
+        <label class="small">Duration</label>
+        <input id="symDur" class="input" placeholder="e.g., 2 days" />
+        <div class="space"></div>
+        <label class="small">Pain / Severity</label>
+        <select id="symPain" class="select">
+          <option value="no">No pain</option>
+          <option value="mild">Mild</option>
+          <option value="moderate">Moderate</option>
+          <option value="severe">Severe</option>
+        </select>
+        <div class="space"></div>
+        <label class="small">Notes (allergies, meds)</label>
+        <textarea id="symNotes" rows="3" placeholder="Any medical history or relevant notes..."></textarea>
+        <div class="space"></div>
+        <button class="btn" id="analyzeNow">Analyze</button>
+        <div class="space"></div>
+        <div id="analysisResult" class="muted small">No analysis yet</div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Doctor Suggestions</div>
+        <div id="symDoctorList"></div>
+      </div>
+    </section>
+
+    <!-- DOCTORS PAGE -->
+    <section id="page-doctors" class="page" style="display:none" data-title="Doctors">
+      <div class="card">
+        <div class="section-title">Nearby Doctors & Hospitals</div>
+        <div class="muted small">Top matches based on specialty and availability</div>
+        <div class="space"></div>
+        <div id="doctorsList"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Hospital Dashboard (Demo)</div>
+        <div class="muted small">Toggle availability to simulate hospital updates</div>
+        <div class="space"></div>
+        <div id="hospitalList"></div>
+      </div>
+    </section>
+
+    <!-- REMEDIES PAGE -->
+    <section id="page-remedies" class="page" style="display:none" data-title="Wellness">
+      <div class="card">
+        <div class="section-title">Natural Remedy Feed</div>
+        <div class="muted small">Search herbal, root and home-based solutions</div>
+        <div class="space"></div>
+        <div class="grid" id="remedyGrid"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT / CONTACT -->
+    <section id="page-about" class="page" style="display:none" data-title="About">
+      <div class="card">
+        <div class="section-title">About MedEase</div>
+        <div class="muted small">MedEase is a demo prototype that combines emergency tracking, AI symptom detection and natural remedy discovery. For production use, integrate secure backends, validated ML models and partner hospitals.</div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Contact</div>
+        <input id="contactName" class="input" placeholder="Your name" />
+        <div class="space"></div>
+        <input id="contactEmail" class="input" placeholder="Email or phone" />
+        <div class="space"></div>
+        <textarea id="contactMsg" rows="4" class="input" placeholder="Message..."></textarea>
+        <div class="space"></div>
+        <button class="btn" id="sendContact">Send</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom" role="navigation" aria-label="Main">
+    <a href="#/" data-route="home" class="active"><div>🏠</div><div>Home</div></a>
+    <a href="#/ambulance" data-route="ambulance"><div>🚑</div><div>Ambulance</div></a>
+    <a href="#/symptom" data-route="symptom"><div>🧠</div><div>Check</div></a>
+    <a href="#/doctors" data-route="doctors"><div>👩‍⚕️</div><div>Doctors</div></a>
+    <a href="#/wellness" data-route="remedies"><div>🌿</div><div>Remedies</div></a>
+  </nav>
+</div>
+
+<script>
+/* ============================
+   App Data (demo)
+   ============================ */
+const demoHospitals = [
+  { id:'h1', name:'City General Hospital', wards:5, icu:true, distance:1.2 },
+  { id:'h2', name:'St. Mary Trauma Center', wards:2, icu:false, distance:2.0 },
+  { id:'h3', name:'Eastside Medical', wards:1, icu:true, distance:3.1 },
+  { id:'h4', name:'Downtown Clinic', wards:3, icu:false, distance:0.8 }
+];
+
+const demoDoctors = [
+  { id:'d1', name:'Dr. Priya Sharma', speciality:'Emergency', rating:4.9, distance:0.8, contact:'+91-98765' },
+  { id:'d2', name:'Dr. Rohan Gupta', speciality:'Cardiology', rating:4.7, distance:1.4, contact:'+91-91234' },
+  { id:'d3', name:'Dr. Meera Nair', speciality:'Dermatology', rating:4.8, distance:0.9, contact:'+91-99887' },
+  { id:'d4', name:'Dr. Ashok Patel', speciality:'Trauma', rating:4.6, distance:2.8, contact:'+91-90000' }
+];
+
+const remedies = [
+  { id:'r1', title:'Aloe Vera Gel — Soothes burns', cause:'Topical soothing, anti-inflammatory', price:'₹120', source:'Local herbs' },
+  { id:'r2', title:'Turmeric Paste — Reduces swelling', cause:'Anti-inflammatory curcumin', price:'₹80', source:'Kitchen / herbalist' },
+  { id:'r3', title:'Peppermint Tea — Eases bloating', cause:'Soothes digestive muscles', price:'₹60', source:'Teas & local shops' },
+  { id:'r4', title:'Licorice Decoction — Good for pigmentation', cause:'Natural skin support', price:'₹150', source:'Herbal markets' },
+  { id:'r5', title:'Ginger & Honey — For sore throat', cause:'Anti-bacterial, soothing', price:'₹70', source:'Kitchen' },
+  { id:'r6', title:'Fenugreek Poultice — Joint pain relief', cause:'Topical anti-inflammatory', price:'₹90', source:'Herbalist' }
+];
+
+/* ============================
+   Routing & Page logic
+   ============================ */
+const pages = {
+  home: document.getElementById('page-home'),
+  ambulance: document.getElementById('page-ambulance'),
+  symptom: document.getElementById('page-symptom'),
+  doctors: document.getElementById('page-doctors'),
+  remedies: document.getElementById('page-remedies'),
+  about: document.getElementById('page-about')
+};
+
+function showPage(name){
+  Object.values(pages).forEach(p => p.style.display = 'none');
+  if(pages[name]) pages[name].style.display = 'block';
+  // update bottom nav active
+  document.querySelectorAll('nav.bottom a').forEach(a => a.classList.remove('active'));
+  const activeLink = document.querySelector(`nav.bottom a[data-route="${name}"]`);
+  if(activeLink) activeLink.classList.add('active');
+  // scroll top of main
+  document.getElementById('main').scrollTop = 0;
+  // update title (optional)
+  const headerTitle = pages[name].dataset.title || 'MedEase';
+  document.title = headerTitle + ' — MedEase';
+}
+
+/* handle hash routing */
+function router(){
+  const hash = location.hash.replace('#/','') || 'home';
+  showPage(hash);
+}
+window.addEventListener('hashchange', router);
+document.querySelectorAll('nav.bottom a').forEach(a => {
+  a.addEventListener('click', (e) => {
+    // hash change will run router
+  });
+});
+// init
+router();
+
+/* ============================
+   Home content render
+   ============================ */
+function renderHome(){
+  // hospitals
+  const hroot = document.getElementById('homeHospitals');
+  hroot.innerHTML = '';
+  demoHospitals.slice(0,3).forEach(h => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.style.marginBottom='8px';
+    div.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center">
+        <div style="font-weight:700">${h.name}</div>
+        <div class="small">${h.distance} km</div>
+      </div>
+      <div class="small muted">${h.wards} wards · ICU: ${h.icu ? 'Yes' : 'No'}</div>
+    `;
+    hroot.appendChild(div);
+  });
+
+  // remedies grid
+  const rroot = document.getElementById('homeRemedies');
+  rroot.innerHTML = '';
+  remedies.slice(0,4).forEach(r=>{
+    const el = document.createElement('div');
+    el.className='rem';
+    el.innerHTML = `
+      <div style="font-weight:700">${r.title}</div>
+      <div class="small muted">${r.cause}</div>
+      <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center">
+        <div class="badge">₹${r.price? r.price.replace('₹','') : 'N/A'}</div>
+        <div class="small muted">${r.source}</div>
+      </div>
+    `;
+    rroot.appendChild(el);
+  });
+}
+renderHome();
+
+/* ============================
+   Remedies page
+   ============================ */
+function renderRemedies(){
+  const grid = document.getElementById('remedyGrid');
+  grid.innerHTML = '';
+  remedies.forEach(r => {
+    const el = document.createElement('div');
+    el.className = 'rem';
+    el.innerHTML = `
+      <div style="font-weight:700">${r.title}</div>
+      <div class="small muted" style="margin-top:6px">${r.cause}</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px">
+        <div class="small muted">${r.source}</div>
+        <button class="btn ghost" onclick="addToCart('${r.id}')">Buy</button>
+      </div>
+    `;
+    grid.appendChild(el);
+  });
+}
+function addToCart(id){
+  alert('Demo: Add to cart -> integrate real e-commerce later.');
+}
+renderRemedies();
+
+/* ============================
+   Doctors & Hospitals render
+   ============================ */
+function renderDoctorsList(){
+  const root = document.getElementById('doctorsList');
+  root.innerHTML = '';
+  demoDoctors.forEach(d => {
+    const div = document.createElement('div');
+    div.className = 'doctor';
+    div.innerHTML = `
+      <div class="doc-avatar">${d.name.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+      <div style="flex:1">
+        <div style="font-weight:700">${d.name} <span class="small muted">· ${d.speciality}</span></div>
+        <div class="small muted">Rating: ${d.rating} · ${d.distance} km</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end">
+        <button class="btn ghost" onclick="contactDoctor('${d.contact}')">Call</button>
+        <div class="small muted">${d.contact}</div>
+      </div>
+    `;
+    root.appendChild(div);
+  });
+
+  // hospitals
+  const hroot = document.getElementById('hospitalList');
+  hroot.innerHTML = '';
+  demoHospitals.forEach(h => {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.style.marginBottom = '8px';
+    el.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center">
+        <div>
+          <div style="font-weight:700">${h.name}</div>
+          <div class="small muted">${h.wards} wards · ICU: ${h.icu ? 'Yes' : 'No'}</div>
+        </div>
+        <div>
+          <label class="small">ICU</label><br/>
+          <input type="checkbox" data-id="${h.id}" ${h.icu ? 'checked' : ''}/>
+        </div>
+      </div>
+    `;
+    hroot.appendChild(el);
+  });
+  // attach toggles
+  hroot.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+    cb.addEventListener('change', (e)=>{
+      const id = e.target.dataset.id;
+      const h = demoHospitals.find(x=>x.id===id);
+      h.icu = e.target.checked;
+      renderHome();
+      log(`Hospital ${h.name} ICU set to ${h.icu}`);
+    });
+  });
+}
+renderDoctorsList();
+
+function contactDoctor(contact){
+  alert('Demo: call ' + contact + ' — integrate calling/telemedicine later.');
+}
+
+/* ============================
+   Ambulance booking + simulation
+   ============================ */
+let booking = null;
+let sim = { running:false, pos:{x:20,y:80}, target:{x:80,y:120}, speed:1, timer:null };
+
+const mapArea = document.getElementById('mapArea');
+const mapSim = document.getElementById('mapSim');
+
+document.getElementById('bookNowBtn').addEventListener('click', () => {
+  const pickup = document.getElementById('pickupInput').value || 'Current Location';
+  const type = document.getElementById('typeSelect').value;
+  const urgency = document.getElementById('urgencySelect').value;
+  // create booking
+  booking = { id:'bk'+Date.now(), pickup, type, urgency, status:'assigned', ambulanceId:'AMB-'+Math.floor(Math.random()*900+100) };
+  document.getElementById('bookingInfo').innerHTML = `<strong>${type} requested</strong> · ${pickup} · Status: <span class="badge">Assigned</span>`;
+  log('Booking created: ' + booking.id);
+  // animate ambulance from left to pickup
+  sim.pos = { x: 20, y: 40 + Math.random()*120 };
+  sim.target = { x: 50 + Math.random()*60, y: 80 + Math.random()*80 };
+  sim.speed = parseFloat(document.getElementById('simRange').value);
+  startSim();
+});
+
+document.getElementById('quickAmb').addEventListener('click', () => {
+  location.hash = '/ambulance';
+  setTimeout(()=> {
+    document.getElementById('pickupInput').value = 'Current Location';
+  },200);
+});
+
+document.getElementById('quickCheck').addEventListener('click', () => { location.hash = '/symptom'; });
+
+document.getElementById('simRange').addEventListener('input', (e) => {
+  sim.speed = parseFloat(e.target.value);
+});
+
+function startSim(){
+  if(sim.timer) clearInterval(sim.timer);
+  sim.timer = setInterval(()=> {
+    // move sim.pos toward target
+    const dx = sim.target.x - sim.pos.x;
+    const dy = sim.target.y - sim.pos.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if(dist < 1){
+      // arrived
+      clearInterval(sim.timer); sim.timer = null;
+      if(booking) {
+        booking.status = 'arrived';
+        document.getElementById('bookingInfo').innerHTML = `<strong>Ambulance arrived</strong> · ${booking.pickup} · <span class="badge">Arrived</span>`;
+        log('Ambulance arrived for ' + booking.id);
+      }
+      document.getElementById('etaText').textContent = 'ETA: 0s';
+      renderMap();
+      return;
+    }
+    const step = Math.max(0.2, sim.speed * 0.6);
+    sim.pos.x += dx/dist * step;
+    sim.pos.y += dy/dist * step;
+    const eta = Math.round(dist / step);
+    document.getElementById('etaText').textContent = 'ETA: ' + eta + 's';
+    renderMap();
+  }, 120);
+}
+
+function renderMap(){
+  // create simple map visual with absolute positioned ambulance
+  mapArea.querySelectorAll('.map-ambulance').forEach(n=>n.remove());
+  const rect = mapArea.getBoundingClientRect();
+  const ax = (sim.pos.x / 100) * rect.width;
+  const ay = (sim.pos.y / 150) * rect.height;
+  const amb = document.createElement('div');
+  amb.className = 'map-ambulance';
+  amb.style.left = ax + 'px';
+  amb.style.top = ay + 'px';
+  amb.innerHTML = `<div style="font-weight:800">${booking? booking.ambulanceId : 'AMB'}</div>`;
+  mapArea.appendChild(amb);
+}
+
+/* ============================
+   Symptom Analyzer (simulated AI)
+   ============================ */
+document.getElementById('analyzeNow').addEventListener('click', async () => {
+  const file = document.getElementById('photoFile').files[0];
+  const dur = document.getElementById('symDur').value || '';
+  const pain = document.getElementById('symPain').value;
+  const notes = document.getElementById('symNotes').value || '';
+  const target = document.getElementById('analysisResult');
+  target.innerHTML = 'Analyzing...';
+
+  // simple heuristic simulation
+  let label='General symptom', conf=0.5, triage='non-urgent';
+  const filename = file ? file.name : '';
+  if(/burn|blister/i.test(filename) || /burn|blister/i.test(notes)){
+    label='Thermal burn'; conf=0.9; triage='urgent';
+  } else if(/chest|palpit|heart/i.test(notes)){
+    label='Potential cardiac symptom'; conf=0.95; triage='critical';
+  } else if(pain === 'severe'){
+    label='Serious injury suspect'; conf=0.85; triage='urgent';
+  } else if(file){
+    // tiny client-side color heuristic
+    try {
+      const avg = await getImageAverageColor(file);
+      if(avg.r > avg.g + 30) { label='Inflammation/Redness'; conf=0.78; triage='urgent'}
+      else { label='Non-specific skin issue'; conf=0.62 }
+    } catch(e){
+      label='Unable to analyze image'; conf=0.45;
+    }
+  } else {
+    if(dur && parseInt(dur) > 7){ label='Chronic symptom — consult doctor'; conf=0.7 }
+  }
+
+  setTimeout(()=>{
+    target.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center">
+      <div><strong>${label}</strong><div class="small muted">Confidence: ${(conf*100).toFixed(0)}% · Triage: ${triage.toUpperCase()}</div></div>
+      <div><button class="btn ghost" id="seekCareBtn">Next</button></div>
+    </div>`;
+    document.getElementById('seekCareBtn').addEventListener('click', () => {
+      location.hash = '/doctors';
+      // also highlight top doctors
+      setTimeout(()=> highlightTopDoctors(), 300);
+    });
+    // show top doctors
+    renderSymDoctors();
+    log('AI analysis: ' + label + ' (' + Math.round(conf*100) + '%)');
+  }, 700 + Math.random()*500);
+});
+
+/* small helper to average image color */
+function getImageAverageColor(file){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const w = Math.min(200, img.width);
+      const h = Math.min(200, img.height);
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const data = ctx.getImageData(0,0,w,h).data;
+      let r=0,g=0,b=0,c=0;
+      for(let i=0;i<data.length;i+=4){
+        r+=data[i]; g+=data[i+1]; b+=data[i+2]; c++;
+      }
+      URL.revokeObjectURL(url);
+      resolve({ r:Math.round(r/c), g:Math.round(g/c), b:Math.round(b/c) });
+    };
+    img.onerror = ()=> { URL.revokeObjectURL(url); reject('err') };
+    img.src = url;
+  });
+}
+
+/* render doctors suggested from symptom */
+function renderSymDoctors(){
+  const root = document.getElementById('symDoctorList');
+  root.innerHTML = '';
+  const top = demoDoctors.slice(0,3);
+  top.forEach(d=>{
+    const el = document.createElement('div');
+    el.className='doctor';
+    el.innerHTML = `
+      <div class="doc-avatar">${d.name.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+      <div style="flex:1">
+        <div style="font-weight:700">${d.name} <span class="small muted">· ${d.speciality}</span></div>
+        <div class="small muted">Rating: ${d.rating} · ${d.distance} km</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end">
+        <button class="btn" onclick="contactDoctor('${d.contact}')">Consult</button>
+        <div class="small muted">${d.contact}</div>
+      </div>
+    `;
+    root.appendChild(el);
+  });
+}
+
+/* highlight top doctors visual hint */
+function highlightTopDoctors(){
+  const nodes = document.querySelectorAll('#doctorsList .doctor');
+  nodes.forEach((n,i)=>{
+    n.style.transition='box-shadow 0.4s, transform 0.2s';
+    n.style.boxShadow = '0 10px 30px rgba(124,200,181,0.12)';
+    setTimeout(()=> n.style.boxShadow='', 2200);
+  });
+}
+
+/* ============================
+   Activity / helper
+   ============================ */
+function log(msg){
+  console.log('[MedEase demo] ' + msg);
+}
+
+/* contact/send */
+document.getElementById('sendContact').addEventListener('click', ()=> {
+  alert('Thanks! Message sent (demo).');
+  document.getElementById('contactName').value=''; document.getElementById('contactEmail').value=''; document.getElementById('contactMsg').value='';
+});
+
+/* initial doctors in doctorsList area */
+function initDoctorsUI(){
+  const root = document.getElementById('doctorsList');
+  root.innerHTML = '';
+  demoDoctors.forEach(d => {
+    const div = document.createElement('div');
+    div.className='doctor';
+    div.innerHTML = `
+      <div class="doc-avatar">${d.name.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+      <div style="flex:1">
+        <div style="font-weight:700">${d.name} <span class="small muted">· ${d.speciality}</span></div>
+        <div class="small muted">Rating: ${d.rating} · ${d.distance} km</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end">
+        <button class="btn ghost" onclick="contactDoctor('${d.contact}')">Call</button>
+        <div class="small muted">${d.contact}</div>
+      </div>
+    `;
+    root.appendChild(div);
+  });
+}
+initDoctorsUI();
+
+/* bottom help button */
+document.getElementById('helpBtn').addEventListener('click', ()=> {
+  alert('Quick help (demo): Use "Book Ambulance" for emergency simulation. Symptom Check provides AI-like analysis for demo purposes only.');
+});
+
+</script>
+</body>
+</html>
