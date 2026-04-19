@@ -13,9 +13,9 @@
     --bg:#f6fbfb;
     --card:#ffffff;
     --muted:#6b7b86;
-    --accent:#7ec8b5;    /* mint */
-    --accent-2:#a7d8f5;  /* sky */
-    --accent-3:#d8b7ff;  /* lavender */
+    --accent:#7ec8b5;    /* mint colour */
+    --accent-2:#a7d8f5;  /* sky colour*/
+    --accent-3:#d8b7ff;  /* lavender colour */
     --danger:#ff6b6b;
     --glass: rgba(255,255,255,0.8);
     --radius:14px;
