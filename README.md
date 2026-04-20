@@ -1,14 +1,13 @@
 # Healthcare-plus
 🏥 HealthCare+ — AI-Powered Emergency & Wellness Platform
 
-> *“Because in every emergency, clarity, speed, and care matter most.”*
-
+> “Because in every emergency, clarity, speed, and care matter most.”
 🌍 Overview
 
-**HealthCare+** is an **AI-powered web platform** designed to revolutionize emergency medical response and early health diagnosis.
-It seamlessly connects users, ambulances, hospitals, and doctors — while also promoting **natural, preventive wellness** through AI-curated remedies.
+HealthCare+ is an AI-powered web platform designed to revolutionize emergency medical response and early health diagnosis.
+It seamlessly connects users, ambulances, hospitals, and doctors — while also promoting natural, preventive wellness through AI-curated remedies.
 
-Just like Uber changed transportation, **HealthCare+** aims to change **emergency healthcare** — by making help visible, reliable, and intelligent.
+Just like Uber changed transportation, HealthCare+ aims to change emergency healthcare — by making help visible, reliable, and intelligent.
 
 💡 Problem Statement
 
