@@ -2,6 +2,8 @@
 🏥 HealthCare+ — AI-Powered Emergency & Wellness Platform
 
 > “Because in every emergency, clarity, speed, and care matter most.”
+
+
 🌍 Overview
 
 HealthCare+ is an AI-powered web platform designed to revolutionize emergency medical response and early health diagnosis.
