@@ -117,19 +117,21 @@ User
 * Empowers users with **AI-driven health awareness**
 * Promotes **natural, sustainable wellness** solutions
 
- 🧑‍💻 Contributors
+ 
 
-👩‍💻 **Nishi Patidar** — Full Stack Developer & UI/UX Designer
+👩‍💻 Nishi Patidar — Full Stack Developer & UI/UX Designer
+
+
 
 🧰 Setup Instructions
 
-1. **Clone the repository**
+1. Clone the repository
 
    ```bash
    git clone https://github.com/yourusername/healthcare-plus.git
    cd healthcare-plus
    ```
-2. **Open `index.html` in your browser**
+2. Open `index.html` in your browser
 3. Explore 🚑 Emergency Tracker, 🧠 AI Detector, 👨‍⚕️ Doctor Finder, and 🌿 Remedy Feed
 
  🏁 Future Scope
@@ -139,7 +141,7 @@ User
 * User accounts and emergency SOS button
 * Integration with wearable devices (IoT)
 
- 🫶 Acknowledgements
 
-Built with ❤️ during a 24-hour hackathon to make **emergency healthcare faster, transparent, and reliable** — powered by AI and compassion.
+
+
 
